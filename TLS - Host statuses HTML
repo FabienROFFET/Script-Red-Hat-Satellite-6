@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <title>Host Statuses</title>
+   <style>
+       th {
+           background-color: Grey;
+           color: white;
+       }
+       td.green {
+           background-color:#ffffff;
+           color:green;
+       }
+       td.yellow {
+           background-color:#ffffff;
+           color:yellow;
+       }
+       td.red {
+           background-color:#ffffff;
+           color:red;
+       }
+       table,th,td {
+               border-collapse:collapse;
+               border: 1px solid black;
+       }
+   </style> 
+</head>
+<body>
+
+  <h2>Life-cycle Dates</h2>
+  <p>All future dates mentioned for "End of Full Support" and "End of Maintenance Support 1" are close approximations, non definitive, and subject to change.</p>
+
+  <table class="table table-rounded table-bordered table-simple table-life-cycle-dates" summary="Red Hat Enterprise Linux Life-cycle Dates">
+    <thead>
+      <tr>
+        <th scope="col" id="th-rhel3-general" class="general">Version</th>
+        <th scope="col" id="th-rhel3-general" class="general">General Availability</th>
+        <th scope="col" id="th-rhel3-phase1" class="phase1">End of Full Support</th>
+        <th scope="col" id="th-rhel3-phase2" class="phase2">End of Maintenance Support 1</th>
+        <th scope="col" id="th-rhel3-phase3" class="phase3">End of Maintenance Support or Maintenance Support 2 (Product retirement)</th>
+        <th scope="col" id="th-rhel3-elp" class="els">End of Extended Life-cycle Support</th>
+        <th scope="col" id="th-rhel3-elp" class="elp">End of Extended Life Phase</th>
+        <th scope="col" id="th-rhel3-elp" class="elp">Last<br />Minor<br />Release</th>
+      </tr>
+      <tr>
+ <td headers="th-rhel3-general" class="general">5</td>
+        <td headers="th-rhel5-general" class="general">March 15, 2007</td>
+        <td headers="th-rhel5-phase1" class="phase1">January 8, 2013</td>
+        <td headers="th-rhel5-phase2" class="phase2">January 31, 2014</td>
+        <td headers="th-rhel5-phase3" class="phase3">March 31, 2017</td>
+        <td headers="th-rhel5-elp" class="elp">November 30, 2020</td>
+        <td headers="th-rhel5-elp" class="elp">Ongoing</td>
+        <td headers="th-rhel5-elp" class="elp">5.11</td>
+      </tr>
+      <tr>
+ <td headers="th-rhel3-general" class="general">6</td>
+        <td headers="th-rhel6-general" class="general">November 10, 2010</td>
+        <td headers="th-rhel6-phase1" class="phase1">May 10, 2016</td>
+        <td headers="th-rhel6-phase2" class="phase2">May 10, 2017</td>
+        <td headers="th-rhel6-phase3" class="phase3">November 30, 2020</td>
+        <td headers="th-rhel6-elp" class="elp">June 30, 2024</td>
+        <td headers="th-rhel6-elp" class="elp">Ongoing</td>
+        <td headers="th-rhel5-elp" class="elp">6.10</td>
+      </tr>
+      <tr>
+ <td headers="th-rhel3-general" class="general">7</td>
+        <td headers="th-rhel7-general" class="general">June 10, 2014</td>
+        <td headers="th-rhel7-phase1" class="phase1">August 6, 2019</td>
+        <td headers="th-rhel7-phase2" class="phase2">August 6, 2020</td>
+        <td headers="th-rhel7-phase3" class="phase3">June 30, 2024</td>
+        <td headers="th-rhel7-elp" class="elp">TBD</td>
+        <td headers="th-rhel7-elp" class="elp">Ongoing</td>
+        <td headers="th-rhel7-elp" class="elp">TBD</td>
+      </tr>
+ <td headers="th-rhel3-general" class="general">8</td>
+        <td headers="th-rhel7-general" class="general">May 2019</td>
+        <td headers="th-rhel7-phase1" class="phase1">May 2024</td>
+        <td headers="th-rhel7-phase2" class="phase2">Not Applicable for RHEL 8</td>
+        <td headers="th-rhel7-phase3" class="phase3">May 2029</td>
+        <td headers="th-rhel7-elp" class="elp">TBD</td>
+        <td headers="th-rhel7-elp" class="elp">TBD</td>
+        <td headers="th-rhel7-elp" class="elp">TBD</td>
+      </tr>
+    </tbody>
+  </table>
+
+<h2>Applicable or Installable</h2>
+<p>Applicable errata are NOT yet accessible by the content host.</p> 
+<p>Installable. Erratum applies to one or more content hosts and it has been made available to the content host.</p>
+
+
+<table>
+    <tr> 
+        <th> Hostname </th>
+        <th> Addr IP </th>
+        <th> Hypervisor </th>
+        <th> OS Release </th> 
+        <th> Distribution </th>
+        <th> Distro Version </th>
+        <th> Kernel </th>
+        <th> Applicable RHSA </th>
+        <th> Applicable RHBA </th>
+        <th> Applicable RHEA </th>
+        <th> Total Applicable Errata </th>
+        <th> Applicable Errata </th>
+        <th> RHSA Match CVE </th>
+        <th> Applicable CVE Details </th>
+        <th> Installable Errata </th>
+    </tr>
+<%- load_hosts(search: input('Hosts filter'), includes: [:operatingsystem, :subscriptions, :kernel_release, :interfaces, :applicable_errata, :applicable_rpms]).each_record do |host| -%>
+   <tr> 
+        <td> <%= host.name  %> </td>
+        <td> <%= host.ip  %> </td>
+        <% if host.facts['virt::host_type'] == "vmware" -%>  
+            <td> VMware </td>
+        <% elsif host.facts['virt::host_type'] == "xen, xen-hvm" -%> 
+            <td> OVM </td>
+        <% else %>
+            <td> Other </td>
+        <% end -%>
+        <td> <%= host.facts['distribution::name'] %> </td>
+        <td> <%= host.facts['distribution::version'] %> </td>
+        <td> <%= host.operatingsystem %> </td>
+        <td> <%= host.facts['uname::release'] %> </td>
+        
+            <% if host_applicable_errata_ids(host).select{|errata| errata.include?("RHSA")}.size == 0 -%>
+                <td class="green"> <%= host_applicable_errata_ids(host).select{|errata| errata.include?("RHSA")}.size %> </td>
+            <% else -%>
+                <td class="red"> <%= host_applicable_errata_ids(host).select{|errata| errata.include?("RHSA")}.size %> </td>
+            <% end -%>
+            
+            <% if host_applicable_errata_ids(host).select{|errata| errata.include?("RHBA")}.size == 0 -%>
+                <td class="green"> <%= host_applicable_errata_ids(host).select{|errata| errata.include?("RHBA")}.size %> </td>
+            <% else -%>
+                <td class="red"> <%= host_applicable_errata_ids(host).select{|errata| errata.include?("RHBA")}.size %> </td>
+            <% end -%>
+            
+            <% if host_applicable_errata_ids(host).select{|errata| errata.include?("RHEA")}.size == 0 -%>
+                <td class="green"> <%= host_applicable_errata_ids(host).select{|errata| errata.include?("RHEA")}.size %> </td>
+            <% else -%>
+                <td class="red"> <%= host_applicable_errata_ids(host).select{|errata| errata.include?("RHEA")}.size %> </td>
+            <% end -%>
+            
+            <% if host_applicable_errata_ids(host).size == 0 -%>
+                <td class="green"> <%= host_applicable_errata_ids(host).size %> </td>
+            <% else -%>
+                <td class="red"> <%= host_applicable_errata_ids(host).size %> </td>
+            <% end -%>
+            
+            <td class="yellow" align="center"> <a href="https://192.168.235.59/pub/reporting/report_host_applicable.<%= host.name  %>.html">Zoom</a> </td>
+            <td class="yellow" align="center"> <a href="https://192.168.235.59/pub/reporting/report_host_match_cve.<%= host.name  %>.html">Zoom</a> </td>
+            <td class="yellow" align="center"> <a href="https://192.168.235.59/pub/reporting/report_host_zoom_cve.<%= host.name  %>.html">Zoom</a> </td>
+            <td class="yellow" align="center"> <a href="https://192.168.235.59/pub/reporting/report_host_installable.<%= host.name  %>.html">Zoom</a> </td>
+
+   </tr>
+<%- end -%>   
+</table>
+
+</body>
+</html>
